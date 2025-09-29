@@ -1,0 +1,28 @@
+{
+  "type": "module",
+  "name": "hans_wilsdorf.static_builder",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/_main.js",
+  "scripts": {
+    "start": "node ./dist/_main.js",
+    "build": "tsc",
+    "dev": "tsx watch ./src/_main.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/azertypow/hans_wilsdorf.static_builder.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/azertypow/hans_wilsdorf.static_builder/issues"
+  },
+  "homepage": "https://github.com/azertypow/hans_wilsdorf.static_builder#readme",
+  "devDependencies": {
+    "@types/node": "^24.5.2",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.2"
+  }
+}
