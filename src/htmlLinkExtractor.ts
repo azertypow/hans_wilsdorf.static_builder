@@ -35,15 +35,8 @@ async function extractMediaLinks(filePath: string): Promise<ILinkInfo[]> {
     }) || []
 }
 
-export default async function() {
-    const inputDirectory: string | undefined = process.argv[2]
-
-    if (!inputDirectory) {
-        console.error("Veuillez indiquer le dossier d'entré")
-        process.exit(1)
-    }
-
-    const outputDir = path.join(process.cwd(), inputDirectory)
+export default async function(inputDirectory: string) {
+    const outputDir = path.join(process.cwd(), inputDirectory, '.output')
 
     try {
         await fs.access(outputDir)

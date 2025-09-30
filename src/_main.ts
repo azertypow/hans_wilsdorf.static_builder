@@ -1,36 +1,47 @@
-import htmlLinkExtractor from "./htmlLinkExtractor.js";
-import writeLinksInJson from "./writeLinksInJson.js";
-import type {ILinkInfo} from "./linksInterfaces.js";
+import htmlLinkExtractor from "./htmlLinkExtractor.js"
+import writeLinksInJson from "./writeLinksInJson.js"
+import execCmd from "./execCmd.js"
+import fetchLinks from "./fetchLinks.js";
 
-htmlLinkExtractor().catch(error => {
+const inputDirectory: string | undefined = process.argv[2]
+const baseUrl: string | undefined = process.argv[3]
+
+if (!inputDirectory) {
+    console.error("Veuillez indiquer le dossier d'entré")
+    process.exit(1)
+}
+
+if(!baseUrl) {
+    console.error("Veuillez indiquer l'url de bae pour le fetch media")
+    process.exit(1)
+}
+
+
+console.info(`Lancement du script 'npm run generate' avec l'input ${inputDirectory}`)
+const exec_nuxt_generate = await execCmd('npm run generate', inputDirectory)
+
+
+console.info('Extraction des liens, enregistrement dans un fichier json et fetch des medias')
+const allLinks = await htmlLinkExtractor(inputDirectory)
+
+writeLinksInJson(allLinks).then(jsonExportPath => {
+    console.log(`Les résultats ont été enregistrés dans ${jsonExportPath}`)
+})
+
+const {fetch_successful_urls, fetch_failed_urls} = await fetchLinks(baseUrl, allLinks)
+console.info(`Successful URLs: ${fetch_successful_urls.length}`)
+console.info(`Failed URLs: ${fetch_failed_urls.length}`)
+console.info(fetch_failed_urls)
+
+
+console.info('Copie des medias dans le dossier static')
+const exec_copy_medias_to_static_website_directory = await execCmd('npm run temp_prod_copy_media', inputDirectory)
+console.info(exec_copy_medias_to_static_website_directory)
+
+
+console.info("Remplacement des liens servie depuis l'API du backend par leur url relative")
+const exec_clean_base_url = await execCmd('npm run temp_prod_replace_base_url', inputDirectory).catch(error => {
     console.error("Une erreur est survenue :", error)
     process.exit(1)
-}).then(async allLinks => {
-    writeLinksInJson(allLinks).then(jsonExportPath => {
-        console.log(`Les résultats ont été enregistrés dans ${jsonExportPath}`)
-    })
-
-    const fetch_successful_urls = []
-    const fetch_failed_urls = []
-
-    for (const link of allLinks) {
-        const url = new URL(link.href, 'http://hw-cms.test/')
-        // const url = new URL(link.href, 'http://localhost:8000/')
-        try {
-            const response = await fetch(url);
-            if (response.ok) {
-                fetch_successful_urls.push(url)
-            } else {
-                fetch_failed_urls.push(url)
-                console.error(`Fetch failed for ${url}: ${response.status}`)
-            }
-        } catch (error) {
-            fetch_failed_urls.push(url)
-            console.error(`Fetch error for ${url}:`, error)
-        }
-    }
-
-    console.log(`Successful URLs: ${fetch_successful_urls.length}`)
-    console.log(`Failed URLs: ${fetch_failed_urls.length}`)
-    console.log(fetch_failed_urls)
 })
+console.info(exec_clean_base_url)
