@@ -5,8 +5,7 @@
   "description": "",
   "main": "dist/_main.js",
   "scripts": {
-    "start": "node ./dist/_main.js",
-    "build": "tsc",
+    "run": "tsx ./src/_main.ts",
     "dev": "tsx watch ./src/_main.ts"
   },
   "repository": {

@@ -2,6 +2,7 @@ import htmlLinkExtractor from "./htmlLinkExtractor.js"
 import writeLinksInJson from "./writeLinksInJson.js"
 import execCmd from "./execCmd.js"
 import fetchLinks from "./fetchLinks.js";
+import path from "node:path";
 
 const inputDirectory: string | undefined = process.argv[2]
 const baseUrl: string | undefined = process.argv[3]
@@ -19,6 +20,7 @@ if(!baseUrl) {
 
 console.info(`Lancement du script 'npm run generate' avec l'input ${inputDirectory}`)
 const exec_nuxt_generate = await execCmd('npm run generate', inputDirectory)
+console.info(exec_nuxt_generate)
 
 
 console.info('Extraction des liens, enregistrement dans un fichier json et fetch des medias')
@@ -45,3 +47,12 @@ const exec_clean_base_url = await execCmd('npm run temp_prod_replace_base_url', 
     process.exit(1)
 })
 console.info(exec_clean_base_url)
+
+const staticWebsitePath = path.join(process.cwd(), inputDirectory, '.output')
+
+console.info(`
+Site static généré correctement
+${staticWebsitePath}
+`)
+
+process.exit(0)
