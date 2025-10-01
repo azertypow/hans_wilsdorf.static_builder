@@ -13,7 +13,7 @@ if (!inputDirectory) {
 }
 
 if(!baseUrl) {
-    console.error("Veuillez indiquer l'url de bae pour le fetch media")
+    console.error("Veuillez indiquer l'url de base pour le fetch media")
     process.exit(1)
 }
 
